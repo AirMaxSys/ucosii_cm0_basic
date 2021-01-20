@@ -22,7 +22,7 @@ TARGET = ucosii_cm0_basic
 # debug build?
 DEBUG = 1
 # optimization
-OPT = -O2
+OPT = -Og
 
 
 #######################################
@@ -43,20 +43,6 @@ Core/Src/stm32f0xx_it.c \
 Core/Src/stm32f0xx_hal_msp.c \
 Core/Src/stm32f0xx_hal_timebase_tim.c \
 Core/Src/system_stm32f0xx.c \
-rtos/Cfg/Template/app_hooks.c \
-rtos/Ports/os_cpu_c.c \
-rtos/Ports/os_dbg.c \
-rtos/Source/os_core.c \
-rtos/Source/os_flag.c \
-rtos/Source/os_mbox.c \
-rtos/Source/os_mutex.c \
-rtos/Source/os_q.c \
-rtos/Source/os_sem.c \
-rtos/Source/os_task.c \
-rtos/Source/os_time.c \
-rtos/Source/os_tmr.c \
-utils/utils.c \
-common/print.c	\ \
 Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim.c \
 Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim_ex.c \
 Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_uart.c \
@@ -73,12 +59,26 @@ Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pwr.c \
 Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pwr_ex.c \
 Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_flash.c \
 Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_flash_ex.c \
-Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_exti.c
+Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_exti.c	\
+rtos/Cfg/Template/app_hooks.c \
+rtos/Ports/os_cpu_c.c \
+rtos/Ports/os_dbg.c \
+rtos/Source/os_core.c \
+rtos/Source/os_flag.c \
+rtos/Source/os_mbox.c \
+rtos/Source/os_mutex.c \
+rtos/Source/os_q.c \
+rtos/Source/os_sem.c \
+rtos/Source/os_task.c \
+rtos/Source/os_time.c \
+rtos/Source/os_tmr.c \
+utils/utils.c \
+common/print.c
 
 # ASM sources
 ASM_SOURCES =  \
 startup_stm32f030x8.s \
-rtos/Ports/os_cpu_a.s \
+rtos/Ports/os_cpu_a.s
 
 
 #######################################
@@ -122,9 +122,9 @@ AS_DEFS =
 
 # C defines
 C_DEFS =  \
--DUSE_FULL_ASSERT	\ \
 -DUSE_HAL_DRIVER \
--DSTM32F030x8
+-DSTM32F030x8	\
+-DUSE_FULL_ASSERT
 
 
 # AS includes
@@ -133,16 +133,15 @@ AS_INCLUDES =
 # C includes
 C_INCLUDES =  \
 -ICore/Inc \
--Irtos/Cfg/Template \
--Irtos/Ports \
--Irtos/Source \
 -IDrivers/STM32F0xx_HAL_Driver/Inc \
 -IDrivers/STM32F0xx_HAL_Driver/Inc/Legacy \
 -IDrivers/CMSIS/Device/ST/STM32F0xx/Include \
--IDrivers/CMSIS/Include	\ \
--Iutils/	\ \
--Icommon \
--IDrivers/CMSIS/Include
+-IDrivers/CMSIS/Include	\
+-Irtos/Cfg/Template \
+-Irtos/Ports \
+-Irtos/Source \
+-Iutils	\
+-Icommon
 
 
 # compile gcc flags
@@ -209,6 +208,15 @@ $(BUILD_DIR):
 #######################################
 clean:
 	del /f build
+
+
+#######################################
+# download image
+#######################################
+
+#######################################
+# debug
+#######################################
   
 #######################################
 # dependencies

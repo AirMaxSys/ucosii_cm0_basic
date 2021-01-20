@@ -4,10 +4,6 @@
             "name": "ARMV6-M",
             "includePath": [
 				"${default}",
-				"D:/software/Repository/STM32Cube_FW_F0_V1.11.2/Drivers/STM32F0xx_HAL_Driver/Inc/**",
-				"D:/software/Repository/STM32Cube_FW_F0_V1.11.2/Drivers/STM32F0xx_HAL_Driver/Inc/Legacy/**",
-				"D:/software/Repository/STM32Cube_FW_F0_V1.11.2/Drivers/CMSIS/Device/ST/STM32F0xx/Include/**",
-				"D:/software/Repository/STM32Cube_FW_F0_V1.11.2/Drivers/CMSIS/Include/**",
                 "${workspaceFolder}/rtos/Source/**",
                 "${workspaceFolder}/rtos/Cfg/**",
                 "${workspaceFolder}/rtos/Ports/**"
@@ -24,7 +20,7 @@
             "windowsSdkVersion": "10.0.18362.0",
             "compilerPath": "D:/gcc-arm-none-eabi-9-2019-q4-major-win32/bin/arm-none-eabi-gcc.exe",
             "cStandard": "c11",
-            "cppStandard": "c++17",
+            "cppStandard": "c++14",
             "intelliSenseMode": "gcc-arm"
         }
     ],

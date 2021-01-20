@@ -32,7 +32,7 @@
 				"-f",
 				"D:\\OpenOCD-20181130\\share\\openocd\\scripts\\board\\st_nucleo_f0.cfg",
 				"-c",
-				"program \"E:/stm32PROJ/f030r8_mk_learn_asm/build/f030r8_mk_learn_asm.elf\"",
+				"program \"E:/stm32PROJ/ucosii_cm0_basic/build/ucosii_cm0_basic.elf\"",
 				"-c",
 				"reset",
 				"-c",
