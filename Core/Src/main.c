@@ -119,19 +119,24 @@ int main(void)
 
 	OSInit();
 	OSTaskCreate(os_task_one_test, NULL, &p_stack1[127], 5);
-	OSTaskCreate(os_task_two_test, NULL, &p_stack2[63], 6);
+	// OSTaskCreate(os_task_two_test, NULL, &p_stack2[63], 6);
 	OSStart();
-		
-  /* USER CODE END 2 */
+	OS_CPU_SysTickInitFreq(48000000);
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    /* USER CODE END WHILE */
+	/* USER CODE END 2 */
 
-    /* USER CODE BEGIN 3 */
+	/* Infinite loop */
+	/* USER CODE BEGIN WHILE */
+	while (1)
+	{
+		/* USER CODE END WHILE */
+
+		/* USER CODE BEGIN 3 */
 		printf("print test\r\n");
+		// HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+		// HAL_Delay(1000);
+		// HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+		// HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }

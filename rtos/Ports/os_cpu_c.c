@@ -465,13 +465,17 @@ void  OSTimeTickHook (void)
 *********************************************************************************************************
 */
 
+#include <stdio.h>
+#include "utils.h"
+
 void  OS_CPU_SysTickHandler (void)
 {
 #if OS_CRITICAL_METHOD == 3u                                    /* Allocate storage for CPU status register             */
     OS_CPU_SR  cpu_sr;
 #endif
 
-
+	printf("call OS systick\r\n");
+	m_puts("call OS systick\r\n");
     OS_ENTER_CRITICAL();
     OSIntEnter();                                               /* Tell uC/OS-II that we are starting an ISR            */
     OS_EXIT_CRITICAL();
