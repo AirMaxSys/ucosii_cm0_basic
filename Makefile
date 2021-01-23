@@ -168,7 +168,6 @@ LDSCRIPT = STM32F030R8Tx_FLASH.ld
 LIBS = -lc -lm -lnosys 
 LIBDIR = 
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
---specs=rdimon.specs -lc -lrdimon
 
 # default action: build all
 all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
@@ -209,10 +208,20 @@ $(BUILD_DIR):
 clean:
 	del /f build
 
-
 #######################################
 # download image
+# openocd -s search scripts or set
+# OPENOCD_SCRIPTS environmet variable
 #######################################
+load:
+	openocd	\
+		-c "tcl_port disabled"	\
+		-c "gdb_port 3333"	\
+		-c "telnet_port 4444"	\
+		-f "st_nucleo_f0.cfg"	\
+		-c "program $(BUILD_DIR)/$(TARGET).elf"	\
+		-c "reset"	\
+		-c "shutdown"
 
 #######################################
 # debug
