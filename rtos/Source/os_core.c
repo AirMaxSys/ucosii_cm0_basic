@@ -35,6 +35,9 @@
 #include <ucos_ii.h>
 #endif
 
+// Add by AirMax LD linker error - undefined reference to 'OS_MemInit'
+#include <os_mem.c>
+
 /*
 *********************************************************************************************************
 *                                      PRIORITY RESOLUTION TABLE
@@ -602,7 +605,7 @@ void  OSInit (void)
 #endif
 
 #if (OS_MEM_EN > 0u) && (OS_MAX_MEM_PART > 0u)
-    // OS_MemInit();                                                /* Initialize the memory manager            */
+    OS_MemInit();                                                /* Initialize the memory manager            */
 #endif
 
 #if (OS_Q_EN > 0u) && (OS_MAX_QS > 0u)

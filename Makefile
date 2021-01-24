@@ -100,6 +100,9 @@ SZ = $(PREFIX)size
 endif
 HEX = $(CP) -O ihex
 BIN = $(CP) -O binary -S
+
+# map (address sorted)
+NM = $(PREFIX)nm -n
  
 #######################################
 # CFLAGS
@@ -170,7 +173,7 @@ LIBDIR =
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
 # default action: build all
-all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
+all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin $(BUILD_DIR)/System.map
 
 
 #######################################
@@ -198,18 +201,22 @@ $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(BIN) $< $@	
+
+$(BUILD_DIR)/System.map:
+	$(NM) $(BUILD_DIR)/$(TARGET).elf > $@
 	
 $(BUILD_DIR):
-	mkdir $@		
+	mkdir $@
 
 #######################################
 # clean up
 #######################################
 clean:
-	del /f build
+	del /Q /f build
 
 #######################################
 # download image
+
 # openocd -s search scripts or set
 # OPENOCD_SCRIPTS environmet variable
 #######################################

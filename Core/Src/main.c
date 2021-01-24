@@ -121,7 +121,6 @@ int main(void)
 	OSTaskCreate(os_task_one_test, NULL, &p_stack1[127], 5);
 	OSTaskCreate(os_task_two_test, NULL, &p_stack2[63], 6);
 	OSStart();
-	OS_CPU_SysTickInitFreq(8000000);
 
 	/* USER CODE END 2 */
 

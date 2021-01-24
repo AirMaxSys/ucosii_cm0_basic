@@ -123,7 +123,8 @@ void  OSInitHookBegin (void)
 #if OS_CPU_HOOKS_EN > 0u
 void  OSInitHookEnd (void)
 {
-
+	// Add by AirMax - init SysTick
+	OS_CPU_SysTickInitFreq(48000000);
 }
 #endif
 
@@ -348,9 +349,10 @@ OS_STK  *OSTaskStkInit (void    (*task)(void *p_arg),
 
 
     (void)opt;                                                  /* 'opt' is not used, prevent warning                   */
-    p_stk      = ptos + 1u;                                     /* Load stack pointer                                   */
+    // p_stk      = ptos + 1u;                                     /* Load stack pointer                                   */
+    p_stk      = ptos;                                     /* Load stack pointer                                   */
                                                                 /* Align the stack to 8-bytes.                          */
-    p_stk      = (OS_STK *)((OS_STK)(p_stk) & 0xFFFFFFF8u);
+    // p_stk      = (OS_STK *)((OS_STK)(p_stk) & 0xFFFFFFF8u);
                                                                 /* Registers stacked as if auto-saved on exception      */
     *(--p_stk) = (OS_STK)0x01000000uL;                          /* xPSR                                                 */
     *(--p_stk) = (OS_STK)task;                                  /* Entry Point                                          */
@@ -465,17 +467,12 @@ void  OSTimeTickHook (void)
 *********************************************************************************************************
 */
 
-#include <stdio.h>
-#include "utils.h"
-
 void  OS_CPU_SysTickHandler (void)
 {
 #if OS_CRITICAL_METHOD == 3u                                    /* Allocate storage for CPU status register             */
     OS_CPU_SR  cpu_sr;
 #endif
 
-	printf("call OS systick\r\n");
-	m_puts("call OS systick\r\n");
     OS_ENTER_CRITICAL();
     OSIntEnter();                                               /* Tell uC/OS-II that we are starting an ISR            */
     OS_EXIT_CRITICAL();
