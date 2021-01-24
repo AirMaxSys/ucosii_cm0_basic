@@ -142,18 +142,9 @@ void  App_TaskDelHook (OS_TCB *ptcb)
 *********************************************************************************************************
 */
 
-#include <stdio.h>
-
 #if OS_VERSION >= 251
 void  App_TaskIdleHook (void)
 {
-	printf("idle hook run\r\n");
-	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-	// OSTimeDlyHMSM(0, 0, 1, 0);
-	HAL_Delay(1000);
-	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-	// OSTimeDlyHMSM(0, 0, 1, 0);
-	HAL_Delay(1000);
 }
 #endif
 
