@@ -102,7 +102,7 @@ HEX = $(CP) -O ihex
 BIN = $(CP) -O binary -S
 
 # map (address sorted)
-NM = $(PREFIX)nm -n
+NM = $(PREFIX)nm -n -S
  
 #######################################
 # CFLAGS
@@ -173,7 +173,7 @@ LIBDIR =
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
 # default action: build all
-all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin $(BUILD_DIR)/System.map
+all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin map
 
 
 #######################################
@@ -202,12 +202,12 @@ $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(BIN) $< $@	
 
-$(BUILD_DIR)/System.map:
-	$(NM) $(BUILD_DIR)/$(TARGET).elf > $@
-	
 $(BUILD_DIR):
 	mkdir $@
 
+map:
+	$(NM) $(BUILD_DIR)/$(TARGET).elf > $(BUILD_DIR)/System.map
+	
 #######################################
 # clean up
 #######################################
@@ -233,7 +233,15 @@ load:
 #######################################
 # debug
 #######################################
-  
+debug:
+	openocd	\
+		-c "tcl_port disabled"	\
+		-c "gdb_port 3333"	\
+		-c "telnet_port 4444"	\
+		-f "st_nucleo_f0.cfg"	\
+		-c "program $(BUILD_DIR)/$(TARGET).elf"	\
+		-c "init"	\
+		-c "halt"
 #######################################
 # dependencies
 #######################################
