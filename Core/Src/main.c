@@ -29,8 +29,6 @@
 #include "os_cfg.h"
 #include "os_cpu.h"
 
-#include <stdio.h>
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -65,22 +63,45 @@ OS_STK p_stack1[128];
 OS_STK p_stack2[128];
 OS_STK p_stack3[128];
 
+OS_EVENT *pse = NULL;
+
 void os_task_one_test(void *argc)
 {
 	while (1) {
 		printf("task one run\r\n");
 		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-		OSTimeDlyHMSM(0, 0, 0, 100);
+		OSTimeDlyHMSM(0, 0, 0, 500);
 		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-		OSTimeDlyHMSM(0, 0, 0, 100);
+		OSTimeDlyHMSM(0, 0, 0, 500);
 	}
 }
 
 void os_task_two_test(void *argc)
 {
+	uint8_t v, err;
+	volatile uint8_t flag = 0;
+
+	// indicate a event not occurred yet
+	v = 0;
+	pse = OSSemCreate(v);
+	if (!pse) {
+		// report error
+		// delete task
+		__NOP();
+	}
+
+
 	while (1) {
-		printf("task two run\r\n");
-		OSTimeDlyHMSM(0, 0, 1, 0);
+		OSSemPend(pse, 0, &err);
+		if (err != OS_ERR_NONE) {
+			__NOP();
+		} else {
+			flag = 1;
+		}
+		if (flag) {
+			printf("task two run\r\n");
+			flag = 0;
+		}
 	}
 }
 
@@ -88,6 +109,7 @@ void os_task_three_test(void *argc)
 {
 	while (1) {
 		printf("task three run\r\n");
+		OSSemPost(pse);
 		OSTimeDly(1000);
 	}
 }
