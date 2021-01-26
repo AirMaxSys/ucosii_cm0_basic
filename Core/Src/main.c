@@ -25,7 +25,6 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "utils.h"
-#include "common.h"
 #include "ucos_ii.h"
 #include "os_cfg.h"
 #include "os_cpu.h"
@@ -63,16 +62,17 @@ void SystemClock_Config(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 OS_STK p_stack1[128];
-OS_STK p_stack2[64];
+OS_STK p_stack2[128];
+OS_STK p_stack3[128];
 
 void os_task_one_test(void *argc)
 {
 	while (1) {
 		printf("task one run\r\n");
 		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-		OSTimeDlyHMSM(0, 0, 1, 0);
+		OSTimeDlyHMSM(0, 0, 0, 100);
 		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-		OSTimeDlyHMSM(0, 0, 1, 0);
+		OSTimeDlyHMSM(0, 0, 0, 100);
 	}
 }
 
@@ -83,6 +83,15 @@ void os_task_two_test(void *argc)
 		OSTimeDlyHMSM(0, 0, 1, 0);
 	}
 }
+
+void os_task_three_test(void *argc)
+{
+	while (1) {
+		printf("task three run\r\n");
+		OSTimeDly(1000);
+	}
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -119,7 +128,8 @@ int main(void)
 
 	OSInit();
 	OSTaskCreate(os_task_one_test, NULL, &p_stack1[127], 5);
-	OSTaskCreate(os_task_two_test, NULL, &p_stack2[63], 6);
+	OSTaskCreate(os_task_two_test, NULL, &p_stack2[127], 6);
+	OSTaskCreate(os_task_three_test, NULL, &p_stack3[127], 7);
 	OSStart();
 
 	/* USER CODE END 2 */
@@ -131,7 +141,6 @@ int main(void)
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
-		printf("print test\r\n");
 		// HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 		// HAL_Delay(1000);
 		// HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);

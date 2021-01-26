@@ -5,8 +5,6 @@
 #include <_syslist.h>
 #include <errno.h>
 #include <stdint.h>
-#include <sys/time.h>
-#include <sys/times.h>
 
 #if !defined(OS_USE_SEMIHOSTING)
 
