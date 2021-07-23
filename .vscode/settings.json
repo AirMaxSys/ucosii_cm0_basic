@@ -1,5 +1,9 @@
 {
 	"files.associations": {
-		"cstdio": "c"
-	}
+        "cstdio": "c",
+        "判断字符.C": "cpp",
+        "cpu.h": "c",
+        "cpu_def.h": "c",
+        "cpu_cfg.h": "c"
+    }
 }

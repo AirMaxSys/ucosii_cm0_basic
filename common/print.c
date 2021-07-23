@@ -14,7 +14,7 @@
 
 UART_HandleTypeDef *gHuart;
 
-void printInit(UART_HandleTypeDef *huart)
+void print_init(UART_HandleTypeDef *huart)
 {
 	gHuart = huart;
 

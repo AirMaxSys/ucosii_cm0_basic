@@ -137,8 +137,8 @@ g_pfnVectors:
   .word  0
   .word  0
 @   .word  PendSV_Handler
-  .word  OS_CPU_PendSVHandler
 @   .word  SysTick_Handler
+  .word  OS_CPU_PendSVHandler
   .word  OS_CPU_SysTickHandler
   .word  WWDG_IRQHandler                   /* Window WatchDog              */
   .word  0                                 /* Reserved                     */
@@ -190,13 +190,9 @@ g_pfnVectors:
   .weak      SVC_Handler
   .thumb_set SVC_Handler,Default_Handler
 
-@   .weak      PendSV_Handler
-@   .thumb_set PendSV_Handler,Default_Handler
   .weak		 OS_CPU_PendSVHandler
   .thumb_set OS_CPU_PendSVHandler,Default_Handler
 
-@   .weak      SysTick_Handler
-@   .thumb_set SysTick_Handler,Default_Handler
   .weak      OS_CPU_SysTickHandler
   .thumb_set OS_CPU_SysTickHandler,Default_Handler
 

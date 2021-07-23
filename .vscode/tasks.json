@@ -2,7 +2,7 @@
     "tasks": [
         {
             "type": "cppbuild",
-            "label": "C/C++: arm-none-eabi-gcc.exe build active file",
+            "label": "CM0 build",
             "command": "make.exe",
             "args": [
 				"-j4",

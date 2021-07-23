@@ -25,6 +25,10 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "utils.h"
+#include "print.h"
+
+#include "lib_mem.h"
+#include "cpu.h"
 #include "ucos_ii.h"
 #include "os_cfg.h"
 #include "os_cpu.h"
@@ -65,53 +69,52 @@ OS_STK p_stack3[128];
 
 OS_EVENT *pse = NULL;
 
-void os_task_one_test(void *argc)
+void task_one_ctx(void *argc)
 {
-	while (1) {
-		printf("task one run\r\n");
-		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-		OSTimeDlyHMSM(0, 0, 0, 500);
-		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-		OSTimeDlyHMSM(0, 0, 0, 500);
-	}
+    while (1) {
+        printf("task one run\r\n");
+        HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+        OSTimeDlyHMSM(0, 0, 0, 500);
+        HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+        OSTimeDlyHMSM(0, 0, 0, 500);
+    }
 }
 
-void os_task_two_test(void *argc)
+void task_two_ctx(void *argc)
 {
-	uint8_t v, err;
-	volatile uint8_t flag = 0;
+    uint8_t v, err;
+    volatile uint8_t flag = 0;
 
-	// indicate a event not occurred yet
-	v = 0;
-	pse = OSSemCreate(v);
-	if (!pse) {
-		// report error
-		// delete task
-		__NOP();
-	}
+    // indicate a event not occurred yet
+    v = 0;
+    pse = OSSemCreate(v);
+    if (!pse) {
+        // report error
+        // delete task
+        __NOP();
+    }
 
-
-	while (1) {
-		OSSemPend(pse, 0, &err);
-		if (err != OS_ERR_NONE) {
-			__NOP();
-		} else {
-			flag = 1;
-		}
-		if (flag) {
-			printf("task two run\r\n");
-			flag = 0;
-		}
-	}
+    while (1) {
+        OSSemPend(pse, 0, &err);
+        if (err != OS_ERR_NONE) {
+            __NOP();
+        } else {
+            flag = 1;
+        }
+        if (flag) {
+            printf("task two run\r\n");
+            flag = 0;
+        }
+    }
 }
 
-void os_task_three_test(void *argc)
+void task_three_ctx(void *argc)
 {
-	while (1) {
-		printf("task three run\r\n");
-		OSSemPost(pse);
-		OSTimeDly(1000);
-	}
+    while (1) {
+        printf("task three run\r\n");
+        OSSemPost(pse);
+        OSTimeDlyHMSM(0, 0, 1, 0);
+    }
 }
 
 /* USER CODE END 0 */
@@ -146,27 +149,34 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-	printInit(&huart2);
 
-	OSInit();
-	OSTaskCreate(os_task_one_test, NULL, &p_stack1[127], 5);
-	OSTaskCreate(os_task_two_test, NULL, &p_stack2[127], 6);
-	OSTaskCreate(os_task_three_test, NULL, &p_stack3[127], 7);
-	OSStart();
+  // Init tick for uC-OS
+  uint32_t cpu_hclk_freq = HAL_RCC_GetHCLKFreq();
+  OS_CPU_SysTickInitFreq(cpu_hclk_freq);
 
-	/* USER CODE END 2 */
+  print_init(&huart2);
 
-	/* Infinite loop */
-	/* USER CODE BEGIN WHILE */
-	while (1)
-	{
-		/* USER CODE END WHILE */
+  Mem_Init();
+  CPU_IntDis();
+  CPU_Init();
 
-		/* USER CODE BEGIN 3 */
-		// HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-		// HAL_Delay(1000);
-		// HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-		// HAL_Delay(1000);
+  OSInit();
+
+  OSTaskCreate(task_one_ctx, NULL, &p_stack1[127], 5);
+  OSTaskCreate(task_two_ctx, NULL, &p_stack2[127], 6);
+  OSTaskCreate(task_three_ctx, NULL, &p_stack3[127], 7);
+
+  OSStart();
+
+  /* USER CODE END 2 */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+  while (1)
+  {
+      /* USER CODE END WHILE */
+
+      /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
