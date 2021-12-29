@@ -29,13 +29,13 @@ OPT = -Og
 # paths
 #######################################
 # Build path
-BUILD_DIR = build
+BUILD_DIR = ./build
 
 ######################################
 # source
 ######################################
 # C sources
-C_SOURCES =  \
+C_SOURCES = \
 Core/Src/main.c \
 Core/Src/gpio.c \
 Core/Src/usart.c \
@@ -59,7 +59,7 @@ Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pwr.c \
 Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pwr_ex.c \
 Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_flash.c \
 Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_flash_ex.c \
-Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_exti.c	\
+Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_exti.c \
 rtos/Cfg/Template/app_hooks.c \
 rtos/Ports/os_cpu_c.c \
 rtos/Ports/os_dbg.c \
@@ -76,7 +76,7 @@ utils/utils.c \
 common/print.c
 
 # ASM sources
-ASM_SOURCES =  \
+ASM_SOURCES = \
 startup_stm32f030x8.s \
 rtos/Ports/os_cpu_a.s
 
@@ -123,7 +123,7 @@ AS_DEFS =
 # C defines
 C_DEFS =  \
 -DUSE_HAL_DRIVER \
--DSTM32F030x8	\
+-DSTM32F030x8 \
 -DUSE_FULL_ASSERT
 
 
@@ -200,13 +200,17 @@ $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(BIN) $< $@	
 	
 $(BUILD_DIR):
-	mkdir $@		
+	mkdir $@
 
 #######################################
 # clean up
 #######################################
 clean:
-	del /f build
+ifeq ($(OS), Windows_NT)
+	rmdir /s $(BUILD_DIR)
+else
+	rm -rf $(BUILD_DIR)
+endif
 
 #######################################
 # download image
@@ -214,19 +218,19 @@ clean:
 # OPENOCD_SCRIPTS environmet variable
 #######################################
 load:
-	openocd	\
-		-c "tcl_port disabled"	\
-		-c "gdb_port 3333"	\
-		-c "telnet_port 4444"	\
-		-f "st_nucleo_f0.cfg"	\
+	openocd \
+		-c "tcl_port disabled" \
+		-c "gdb_port 3333" \
+		-c "telnet_port 4444" \
+		-f "st_nucleo_f0.cfg" \
 		-c "program $(BUILD_DIR)/$(TARGET).elf"	\
-		-c "reset"	\
+		-c "reset" \
 		-c "shutdown"
 
 #######################################
 # debug
 #######################################
-  
+
 #######################################
 # dependencies
 #######################################
