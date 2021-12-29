@@ -23,3 +23,5 @@
 * Load: ```make load```
 
 ## Debuger
+
+* arm-none-eabi-gdb
