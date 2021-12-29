@@ -1,9 +1,8 @@
 #include "utils.h"
-#include "main.h"
 
 extern UART_HandleTypeDef huart2;
 
-size_t m_strlen(const char *s)
+uint32_t m_strlen(const char *s)
 {
 	assert_param(NULL == s);
 
@@ -14,7 +13,7 @@ size_t m_strlen(const char *s)
 	return len;
 }
 
-void *m_memcpy(void *dst, const void *src, size_t n)
+void *m_memcpy(void *dst, const void *src, uint32_t n)
 {
 	assert_param(NULL == dst);
 	assert_param(NULL == src);

@@ -5,7 +5,7 @@
 #include <sys/stat.h>
 #include <stdio.h>
 
-void printInit(UART_HandleTypeDef *huart);
+void print_init(UART_HandleTypeDef *huart);
 int _isatty(int fd);
 int _write(int fd, char *ptr, int len);
 int _close(int fd);

@@ -5,8 +5,6 @@
 #include <_syslist.h>
 #include <errno.h>
 #include <stdint.h>
-#include <sys/time.h>
-#include <sys/times.h>
 
 #if !defined(OS_USE_SEMIHOSTING)
 
@@ -16,7 +14,7 @@
 
 UART_HandleTypeDef *gHuart;
 
-void printInit(UART_HandleTypeDef *huart)
+void print_init(UART_HandleTypeDef *huart)
 {
 	gHuart = huart;
 

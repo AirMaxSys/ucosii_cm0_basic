@@ -59,26 +59,33 @@ Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pwr.c \
 Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pwr_ex.c \
 Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_flash.c \
 Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_flash_ex.c \
-Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_exti.c \
-rtos/Cfg/Template/app_hooks.c \
-rtos/Ports/os_cpu_c.c \
-rtos/Ports/os_dbg.c \
-rtos/Source/os_core.c \
-rtos/Source/os_flag.c \
-rtos/Source/os_mbox.c \
-rtos/Source/os_mutex.c \
-rtos/Source/os_q.c \
-rtos/Source/os_sem.c \
-rtos/Source/os_task.c \
-rtos/Source/os_time.c \
-rtos/Source/os_tmr.c \
+Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_exti.c	\
+rtos/uC-CPU/cpu_core.c \
+rtos/uC-CPU/ARM-Cortex-M/ARMv6-M/cpu_c.c \
+rtos/uC-OS2/Source/os_core.c \
+rtos/uC-OS2/Source/os_flag.c \
+rtos/uC-OS2/Source/os_mbox.c \
+rtos/uC-OS2/Source/os_mutex.c \
+rtos/uC-OS2/Source/os_q.c \
+rtos/uC-OS2/Source/os_sem.c \
+rtos/uC-OS2/Source/os_task.c \
+rtos/uC-OS2/Source/os_time.c \
+rtos/uC-OS2/Source/os_tmr.c \
+rtos/uC-OS2/Cfg/Template/app_hooks.c \
+rtos/uC-OS2/Ports/os_cpu_c.c \
+rtos/uC-OS2/Ports/os_dbg.c \
+rtos/uC-LIB/lib_ascii.c \
+rtos/uC-LIB/lib_math.c \
+rtos/uC-LIB/lib_mem.c \
+rtos/uC-LIB/lib_str.c \
 utils/utils.c \
 common/print.c
 
 # ASM sources
 ASM_SOURCES = \
 startup_stm32f030x8.s \
-rtos/Ports/os_cpu_a.s
+rtos/uC-OS2/Ports/os_cpu_a.s \
+rtos/uC-CPU/ARM-Cortex-M/ARMv6-M/GNU/cpu_a.s
 
 
 #######################################
@@ -100,6 +107,9 @@ SZ = $(PREFIX)size
 endif
 HEX = $(CP) -O ihex
 BIN = $(CP) -O binary -S
+
+# map (address sorted)
+NM = $(PREFIX)nm -n -S
  
 #######################################
 # CFLAGS
@@ -124,8 +134,6 @@ AS_DEFS =
 C_DEFS =  \
 -DUSE_HAL_DRIVER \
 -DSTM32F030x8 \
--DUSE_FULL_ASSERT
-
 
 # AS includes
 AS_INCLUDES = 
@@ -137,9 +145,14 @@ C_INCLUDES =  \
 -IDrivers/STM32F0xx_HAL_Driver/Inc/Legacy \
 -IDrivers/CMSIS/Device/ST/STM32F0xx/Include \
 -IDrivers/CMSIS/Include	\
--Irtos/Cfg/Template \
--Irtos/Ports \
--Irtos/Source \
+-Irtos/uC-CPU \
+-Irtos/uC-CPU/Cfg/Template \
+-Irtos/uC-CPU/ARM-Cortex-M/ARMv6-M/GNU \
+-Irtos/uC-OS2/Cfg/Template \
+-Irtos/uC-OS2/Ports \
+-Irtos/uC-OS2/Source \
+-Irtos/uC-LIB/Cfg/Template \
+-Irtos/uC-LIB \
 -Iutils	\
 -Icommon
 
@@ -170,7 +183,7 @@ LIBDIR =
 LDFLAGS = $(MCU) -specs=nano.specs -T$(LDSCRIPT) $(LIBDIR) $(LIBS) -Wl,-Map=$(BUILD_DIR)/$(TARGET).map,--cref -Wl,--gc-sections
 
 # default action: build all
-all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin
+all: $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin map
 
 
 #######################################
@@ -198,10 +211,13 @@ $(BUILD_DIR)/%.hex: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	
 $(BUILD_DIR)/%.bin: $(BUILD_DIR)/%.elf | $(BUILD_DIR)
 	$(BIN) $< $@	
-	
+
 $(BUILD_DIR):
 	mkdir $@
 
+map:
+	$(NM) $(BUILD_DIR)/$(TARGET).elf > $(BUILD_DIR)/System.map
+	
 #######################################
 # clean up
 #######################################
@@ -214,6 +230,7 @@ endif
 
 #######################################
 # download image
+
 # openocd -s search scripts or set
 # OPENOCD_SCRIPTS environmet variable
 #######################################
@@ -230,7 +247,15 @@ load:
 #######################################
 # debug
 #######################################
-
+debug:
+	openocd	\
+		-c "tcl_port disabled" \
+		-c "gdb_port 3333" \
+		-c "telnet_port 4444" \
+		-f "st_nucleo_f0.cfg" \
+		-c "program $(BUILD_DIR)/$(TARGET).elf"	\
+		-c "init" \
+		-c "halt"
 #######################################
 # dependencies
 #######################################
