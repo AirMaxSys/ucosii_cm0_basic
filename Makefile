@@ -223,9 +223,9 @@ map:
 #######################################
 clean:
 ifeq ($(OS), Windows_NT)
-	rmdir /s $(BUILD_DIR)
+	@rmdir /s $(BUILD_DIR)
 else
-	rm -rf $(BUILD_DIR)
+	@rm -rf $(BUILD_DIR)
 endif
 
 #######################################
