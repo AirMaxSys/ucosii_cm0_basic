@@ -1,7 +1,7 @@
 #ifndef	_UTILS_H
 #define	_UTILS_H
 
-#include "main.h"
+#include <stdint.h>
 
 uint32_t m_strlen(const char *s);
 void *m_memcpy(void *dst, const void *src, uint32_t n);

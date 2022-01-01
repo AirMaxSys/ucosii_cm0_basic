@@ -1,7 +1,7 @@
 #ifndef _PRINT_H
 #define _PRINT_H
 
-#include "main.h"
+#include "stm32f0xx_hal.h"
 #include <sys/stat.h>
 #include <stdio.h>
 
